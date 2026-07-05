@@ -30,7 +30,6 @@ npm install
 2. Go to **Project Settings → API** and copy:
    - Project URL → `SUPABASE_URL`
    - `anon` public key → `SUPABASE_ANON_KEY`
-   - `service_role` secret key → `SUPABASE_SERVICE_ROLE_KEY`
 3. Copy the env template and fill in values:
 
 ```bash
@@ -143,4 +142,18 @@ npm run dev        # Start with hot reload
 npm run build      # Compile TypeScript
 npm start          # Run compiled output
 npm run typecheck  # Type-check without emitting
+```
+
+## Publish to GitHub
+
+```bash
+gh auth login
+gh repo create marketplace-api --public --source=. --remote=origin --push
+```
+
+Or create a repo manually on GitHub, then:
+
+```bash
+git remote add origin git@github.com:YOUR_USERNAME/marketplace-api.git
+git push -u origin master
 ```

@@ -81,23 +81,28 @@ export async function orderRoutes(app: FastifyInstance): Promise<void> {
       }
 
       const supabase = createUserClient(accessToken);
-      const { data, error } = await supabase
+
+      const { error: updateError } = await supabase
         .from("orders")
         .update({ status })
+        .eq("id", id);
+
+      if (updateError) {
+        return reply.code(400).send({ error: updateError.message });
+      }
+
+      // Buyers can read their orders via RLS; sellers can update but not read back.
+      const { data } = await supabase
+        .from("orders")
+        .select("id, listing_id, buyer_id, status, created_at, updated_at")
         .eq("id", id)
-        .select()
-        .single();
+        .maybeSingle();
 
-      if (error) {
-        return reply.code(400).send({ error: error.message });
-      }
-      if (!data) {
-        return reply.code(404).send({
-          error: "Order not found or you are not allowed to update it",
-        });
+      if (data) {
+        return reply.send(data);
       }
 
-      return reply.send(data);
+      return reply.send({ id, status });
     }
   );
 }

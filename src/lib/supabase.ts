@@ -16,6 +16,9 @@ export function createUserClient(accessToken: string): SupabaseClient {
 }
 
 export function createServiceClient(): SupabaseClient {
+  if (!config.supabaseServiceRoleKey) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY is required for service client");
+  }
   return createClient(config.supabaseUrl, config.supabaseServiceRoleKey, {
     auth: {
       autoRefreshToken: false,
