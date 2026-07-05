@@ -19,10 +19,12 @@ A small marketplace backend built with **Node.js**, **Fastify**, and **Supabase*
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/marketplace-api.git
-cd marketplace-api
+git clone https://github.com/Ameershahal/Marketplace.git
+cd Marketplace
 npm install
 ```
+
+> **Note for reviewers:** Use your own Supabase project and credentials. Do not use the author's `.env` — it is not included in the repo.
 
 ### 2. Configure Supabase
 
@@ -135,6 +137,8 @@ Access control is enforced at the **database layer** via Supabase Row Level Secu
 
 The API forwards each user's JWT to Supabase, so Postgres policies apply on every query — not just in application code.
 
+**Tradeoff:** Sellers can update order status on orders for their listings, but cannot read those orders via `GET /orders` (buyer-only visibility). The API returns `{ id, status }` when a seller updates an order.
+
 ## Scripts
 
 ```bash
@@ -142,18 +146,17 @@ npm run dev        # Start with hot reload
 npm run build      # Compile TypeScript
 npm start          # Run compiled output
 npm run typecheck  # Type-check without emitting
+npm run test:api   # Run integration tests (server must be running)
 ```
 
-## Publish to GitHub
+To run tests, start the server in one terminal (`npm run dev`), then in another:
 
 ```bash
-gh auth login
-gh repo create marketplace-api --public --source=. --remote=origin --push
+npm run test:api
 ```
 
-Or create a repo manually on GitHub, then:
+Optional: add `SUPABASE_SERVICE_ROLE_KEY` to `.env` to seed test users and avoid signup rate limits.
 
-```bash
-git remote add origin git@github.com:YOUR_USERNAME/marketplace-api.git
-git push -u origin master
-```
+## Repository
+
+https://github.com/Ameershahal/Marketplace
